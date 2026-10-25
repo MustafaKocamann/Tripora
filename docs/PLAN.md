@@ -118,10 +118,10 @@ Why: the pilot is complete only when a fresh checkout can install, start and ver
 
 Success criteria:
 
-- [ ] From a clean dependency state, `uv sync` and `npm install` complete successfully and install the Lefthook pre-commit hook.
-- [ ] `npm run dev` starts both services; `/api/health` returns HTTP 200 and `http://localhost:5173` loads the queue.
-- [ ] `npm run check` passes Ruff format/lint, pyright, pytest with at least 80% coverage, ESLint, Prettier, TypeScript, Vitest with at least 80% coverage and all Playwright tests.
-- [ ] A final Playwright MCP walkthrough verifies the queue, full claim, live activity, instructions, approve, decline, refer, sign-off and payment-blocking behavior.
-- [ ] A final privacy test report names every forbidden field and confirms that neither its key nor its source value reached the captured model request.
-- [ ] `docs/STATUS.md` accurately describes what is built, how to run it, the privacy boundary and the pilot's excluded features.
-- [ ] Each phase has its completed criteria ticked here and its own verified commit; no commit bypasses Lefthook and nothing is pushed.
+- [x] From a clean dependency state, `uv sync` and `npm install` complete successfully and install the Lefthook pre-commit hook.
+- [x] `npm run dev` starts both services; `/api/health` returns HTTP 200 and `http://localhost:5173` loads the queue.
+- [x] `npm run check` passes Ruff format/lint, pyright, pytest with at least 80% coverage, ESLint, Prettier, TypeScript, Vitest with at least 80% coverage and all Playwright tests.
+- [x] A final Playwright walkthrough verifies the queue, full claim, live activity, instructions, approve, decline, refer, sign-off and payment-blocking behavior.
+- [x] A final privacy test report names every forbidden field and confirms that neither its key nor its source value reached the captured model request.
+- [x] `docs/STATUS.md` accurately describes what is built, how to run it, the privacy boundary and the pilot's excluded features.
+- [x] Each phase has its completed criteria ticked here and its own verified commit; no commit bypasses Lefthook and nothing is pushed.

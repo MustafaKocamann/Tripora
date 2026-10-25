@@ -17,6 +17,24 @@ test("loads the branded handler dashboard and read-only instructions", async ({
   await expect(page.getByRole("heading", { name: "UnderCover" })).toBeVisible();
   await expect(page.getByText("25", { exact: true })).toBeVisible();
   await expect(page.getByText("$420.00").first()).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Flight home canceled by the airline, rebooked the next morning",
+    }),
+  ).toBeVisible();
+  for (const section of [
+    "Customer",
+    "Policy",
+    "Claimed items",
+    "Supporting documents",
+    "Previous claims",
+    "Agent activity",
+  ]) {
+    await expect(page.getByRole("heading", { name: section })).toBeVisible();
+  }
+  await expect(
+    page.getByText("Meridian Air cancellation notice"),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "Agent instructions" }).click();
   await expect(
