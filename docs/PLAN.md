@@ -47,14 +47,14 @@ Why: business safeguards belong in deterministic server code, not in prompts or 
 
 Success criteria:
 
-- [ ] `uv run pytest backend/tests/test_claims_api.py backend/tests/test_workflow.py -q` passes for queue listing, claim detail, all three decisions, activity ordering, sign-off and payment.
-- [ ] `GET /api/claims` returns HTTP 200 with all 25 claims and their queue states; it contains no held-out or security claim.
-- [ ] `GET /api/claims/{claim_id}` returns the complete handler-facing claim, policy, customer history, documents, decision, activity and payment state.
-- [ ] Recording an approval of $1,000 or less can reach `decided`; recording an approval over $1,000 reaches `waiting_for_sign_off`.
-- [ ] Before sign-off, `POST /api/claims/{claim_id}/payments` with `{"amount":1250.0}` returns HTTP 409 with `{"detail":"Handler sign-off required"}` and creates no payment.
-- [ ] After a required-handler sign-off operation, the separate payment operation accepts the approved amount and records a simulated payment; an incorrect amount is rejected.
-- [ ] Declined and referred claims cannot be paid, regardless of caller or amount.
-- [ ] `/openapi.json` tests prove every operation has a unique explicit operation ID, a one-line summary/docstring and no optional request inputs.
+- [x] `uv run pytest backend/tests/test_claims_api.py backend/tests/test_workflow.py -q` passes for queue listing, claim detail, all three decisions, activity ordering, sign-off and payment.
+- [x] `GET /api/claims` returns HTTP 200 with all 25 claims and their queue states; it contains no held-out or security claim.
+- [x] `GET /api/claims/{claim_id}` returns the complete handler-facing claim, policy, customer history, documents, decision, activity and payment state.
+- [x] Recording an approval of $1,000 or less can reach `decided`; recording an approval over $1,000 reaches `waiting_for_sign_off`.
+- [x] Before sign-off, `POST /api/claims/{claim_id}/payments` with `{"amount":1250.0}` returns HTTP 409 with `{"detail":"Handler sign-off required"}` and creates no payment.
+- [x] After a required-handler sign-off operation, the separate payment operation accepts the approved amount and records a simulated payment; an incorrect amount is rejected.
+- [x] Declined and referred claims cannot be paid, regardless of caller or amount.
+- [x] `/openapi.json` tests prove every operation has a unique explicit operation ID, a one-line summary/docstring and no optional request inputs.
 
 ## Phase 3: Privacy-safe UnderCover Agent
 

@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.api import router
 from backend.database import initialize_database
 
 
@@ -22,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(router)
 
 
 @app.get("/api/health", operation_id="get_health")
