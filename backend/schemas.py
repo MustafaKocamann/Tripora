@@ -73,3 +73,22 @@ class ClaimDetail(BaseModel):
     activities: list[Activity]
     sign_off: SignOff | None
     payment: Payment | None
+
+
+class DecisionContext(BaseModel):
+    claim: dict[str, object]
+    policy: dict[str, object]
+    previous_claims: list[dict[str, object]]
+
+
+class InstructionsResponse(BaseModel):
+    instructions: str
+
+
+class RunRequest(BaseModel):
+    thread_id: str = Field(min_length=1)
+
+
+class RunResponse(RunRequest):
+    claim_id: str
+    status: Literal["started"]

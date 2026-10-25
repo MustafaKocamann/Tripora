@@ -1,4 +1,5 @@
 import json
+import re
 import sqlite3
 from contextlib import closing
 from pathlib import Path
@@ -57,6 +58,121 @@ def list_claims(path: Path | None = None) -> list[JsonObject]:
             }
         )
     return claims
+
+
+def _private_values(customer: JsonObject, policy: JsonObject) -> list[str]:
+    values = [
+        customer.get("name"),
+        customer.get("email"),
+        customer.get("phone"),
+        customer.get("date_of_birth"),
+    ]
+    address = cast(JsonObject, customer.get("address", {}))
+    values.extend(address.values())
+    values.extend(cast(list[object], policy.get("travelers", [])))
+    return sorted(
+        {str(value) for value in values if value and len(str(value)) >= 4},
+        key=len,
+        reverse=True,
+    )
+
+
+def _redact_text(value: object, private_values: list[str]) -> str:
+    text = str(value)
+    for private_value in private_values:
+        text = re.sub(re.escape(private_value), "[REDACTED]", text, flags=re.IGNORECASE)
+    return text
+
+
+def _sanitize_claim(claim: JsonObject, private_values: list[str]) -> JsonObject:
+    items = cast(list[JsonObject], claim["items"])
+    documents = cast(list[JsonObject], claim["documents"])
+    return {
+        "claim_id": claim["claim_id"],
+        "claim_type": claim["claim_type"],
+        "submitted_on": claim["submitted_on"],
+        "incident_date": claim["incident_date"],
+        "incident_location": _redact_text(claim["incident_location"], private_values),
+        "summary": _redact_text(claim["summary"], private_values),
+        "story": _redact_text(claim["story"], private_values),
+        "items": [
+            {
+                "description": _redact_text(item["description"], private_values),
+                "category": item["category"],
+                "amount": item["amount"],
+            }
+            for item in items
+        ],
+        "amount_claimed": claim["amount_claimed"],
+        "documents": [
+            {
+                "label": _redact_text(document["name"], private_values),
+                "type": document["type"],
+                "content": _redact_text(document["content"], private_values),
+            }
+            for document in documents
+        ],
+    }
+
+
+def _sanitize_coverage(plan: JsonObject) -> JsonObject:
+    return {key: value for key, value in plan.items() if key not in {"name", "plan_id"}}
+
+
+def get_decision_context(claim_id: str, path: Path | None = None) -> JsonObject:
+    """Return the allowlisted, privacy-safe agent context."""
+    with closing(connect(path)) as connection:
+        claim_row = _required_row(
+            connection, "SELECT data FROM claims WHERE claim_id = ?", (claim_id,)
+        )
+        claim = _decode(str(claim_row["data"]))
+        policy_row = connection.execute(
+            "SELECT data FROM policies WHERE policy_id = ?", (claim["policy_id"],)
+        ).fetchone()
+        customer_row = connection.execute(
+            "SELECT data FROM customers WHERE customer_id = ?",
+            (claim["customer_id"],),
+        ).fetchone()
+        if policy_row is None or customer_row is None:
+            raise ValueError("Related claim data not found")
+        policy = _decode(str(policy_row["data"]))
+        customer = _decode(str(customer_row["data"]))
+        plan_row = connection.execute(
+            "SELECT data FROM plans WHERE plan_id = ?", (policy["plan"],)
+        ).fetchone()
+        if plan_row is None:
+            raise ValueError("Plan not found")
+        wording_row = connection.execute(
+            "SELECT data FROM settings WHERE key = 'policy_wording'"
+        ).fetchone()
+        if wording_row is None:
+            raise ValueError("Policy wording not found")
+    private_values = _private_values(customer, policy)
+    previous_claims = cast(list[JsonObject], customer.get("previous_claims", []))
+    return {
+        "claim": _sanitize_claim(claim, private_values),
+        "policy": {
+            "plan": policy["plan"],
+            "add_ons": policy["add_ons"],
+            "purchased_on": policy["purchased_on"],
+            "trip": policy["trip"],
+            "status": policy["status"],
+            "coverage": _sanitize_coverage(_decode(str(plan_row["data"]))),
+            "wording": str(wording_row["data"]),
+        },
+        "previous_claims": [
+            {
+                "claim_id": previous["claim_id"],
+                "filed_on": previous["filed_on"],
+                "incident_date": previous["incident_date"],
+                "claim_type": previous["claim_type"],
+                "summary": _redact_text(previous["summary"], private_values),
+                "outcome": previous["outcome"],
+                "amount_paid": previous["amount_paid"],
+            }
+            for previous in previous_claims
+        ],
+    }
 
 
 def get_claim_detail(claim_id: str, path: Path | None = None) -> JsonObject:

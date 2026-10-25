@@ -1,9 +1,9 @@
 # Status
 
-Phases 1 and 2 of the pilot are complete:
+Phases 1 through 3 of the pilot are complete:
 
 - `backend/`: FastAPI and SQLite API for the 25-claim queue, full claim detail, ordered activity, decisions, handler sign-off and simulated payment
-- `agent/`: the typed `run(claim_id, thread_id)` entry point ready for the claim workflow
+- `agent/`: LangChain `create_agent` entry point with structured decisions, backend-only tools and a deterministic test mode
 - `dashboard/`: React, Vite and Vitest application foundation
 - `e2e/`: Playwright application smoke test
 - root commands: `npm run dev`, `npm run check:python`, `npm run check:ts` and `npm run check:e2e`
@@ -12,6 +12,10 @@ The seed process reads the operational JSON and policy wording only. It does not
 
 The backend owns the workflow guardrails. Approvals over $1,000 wait for a valid handler sign-off, declined and referred claims cannot be paid, and payment must match the approved payout.
 
+The agent receives an allowlisted decision context. Customer and traveler names, customer ID, email, phone, address and date of birth are excluded; known occurrences are redacted from claim and document text before the model call. The model has no full-claim, filesystem, evaluation-data or claims-manual tool.
+
+Set `UNDERCOVER_STUB_AGENT=1` to exercise agent flows without a model request. Production uses `MODEL_NAME` when set and otherwise `openai/gpt-6-luna` through OpenRouter.
+
 Run `uv sync` and `npm install`, then `npm run dev`. The API is at `http://127.0.0.1:8000` and the dashboard is at `http://127.0.0.1:5173`.
 
-The privacy-safe agent, operational dashboard and full end-to-end journeys are still to be built in the remaining phases.
+The operational dashboard and full end-to-end journeys are still to be built in the remaining phases.

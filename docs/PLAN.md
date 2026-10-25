@@ -66,14 +66,14 @@ Why: the model needs enough evidence to decide the claim, but contact, identity 
 
 Success criteria:
 
-- [ ] `uv run pytest agent/tests -q` passes using only stub models; no test makes a real model request.
-- [ ] Stub scenarios prove approve, decline and refer results are persisted with the correct payout, two- or three-sentence rationale and relevant policy section.
-- [ ] `run(claim_id, thread_id)` marks a claim in progress, records ordered activity, records one final decision and returns the stored result.
-- [ ] A captured model call contains the required claim, coverage, history and policy facts but contains none of these keys: `name`, `customer_id`, `email`, `phone`, `address`, `date_of_birth` or traveler identity fields.
-- [ ] The same captured call contains none of the corresponding source values, even when a known email, phone number, address, birth date or name is repeated inside story or document text.
-- [ ] Tests prove the agent tools cannot fetch the generic full claim endpoint, `data/evals/`, `data/security/` or `claims_manual.md`.
-- [ ] An approval over $1,000 can be recorded, but the agent's attempted payment is rejected by the backend and leaves the claim waiting for sign-off.
-- [ ] An invalid model result is not silently accepted and leaves a clear failed activity event without creating a decision or payment.
+- [x] `uv run pytest agent/tests -q` passes using only stub models; no test makes a real model request.
+- [x] Stub scenarios prove approve, decline and refer results are persisted with the correct payout, two- or three-sentence rationale and relevant policy section.
+- [x] `run(claim_id, thread_id)` marks a claim in progress, records ordered activity, records one final decision and returns the stored result.
+- [x] A captured model call contains the required claim, coverage, history and policy facts but contains none of these keys: `name`, `customer_id`, `email`, `phone`, `address`, `date_of_birth` or traveler identity fields.
+- [x] The same captured call contains none of the corresponding source values, even when a known email, phone number, address, birth date or name is repeated inside story or document text.
+- [x] Tests prove the agent tools cannot fetch the generic full claim endpoint, `data/evals/`, `data/security/` or `claims_manual.md`.
+- [x] An approval over $1,000 can be recorded, but the agent's attempted payment is rejected by the backend and leaves the claim waiting for sign-off.
+- [x] An invalid model result is not silently accepted and leaves a clear failed activity event without creating a decision or payment.
 
 ## Phase 4: Handler dashboard
 

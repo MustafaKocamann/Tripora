@@ -1,15 +1,20 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from backend import repository
+from backend.instructions import AGENT_INSTRUCTIONS
 from backend.schemas import (
     Activity,
     ActivityCreate,
     ClaimDetail,
     Decision,
+    DecisionContext,
     DecisionCreate,
+    InstructionsResponse,
     Payment,
     PaymentCreate,
     QueueResponse,
+    RunRequest,
+    RunResponse,
     SignOff,
     SignOffCreate,
 )
@@ -21,6 +26,12 @@ def _http_error(error: ValueError) -> HTTPException:
     message = str(error)
     status = 404 if message.endswith("not found") else 409
     return HTTPException(status_code=status, detail=message)
+
+
+def _run_agent(claim_id: str, thread_id: str) -> None:
+    from agent import run
+
+    run(claim_id, thread_id)
 
 
 @router.get("/claims", operation_id="list_claims", response_model=QueueResponse)
@@ -37,6 +48,51 @@ def get_claim(claim_id: str) -> ClaimDetail:
         return ClaimDetail.model_validate(repository.get_claim_detail(claim_id))
     except ValueError as error:
         raise _http_error(error) from error
+
+
+@router.get(
+    "/agent/claims/{claim_id}/context",
+    operation_id="get_agent_claim_context",
+    response_model=DecisionContext,
+)
+def get_agent_claim_context(claim_id: str) -> DecisionContext:
+    """Return privacy-safe context for one agent decision."""
+    try:
+        return DecisionContext.model_validate(repository.get_decision_context(claim_id))
+    except ValueError as error:
+        raise _http_error(error) from error
+
+
+@router.get(
+    "/agent/instructions",
+    operation_id="get_agent_instructions",
+    response_model=InstructionsResponse,
+)
+def get_agent_instructions() -> InstructionsResponse:
+    """Return the read-only agent instructions."""
+    return InstructionsResponse(instructions=AGENT_INSTRUCTIONS)
+
+
+@router.post(
+    "/claims/{claim_id}/runs",
+    operation_id="run_claim_agent",
+    response_model=RunResponse,
+    status_code=202,
+)
+def run_claim_agent(
+    claim_id: str, request: RunRequest, background_tasks: BackgroundTasks
+) -> RunResponse:
+    """Start the agent on one waiting claim."""
+    try:
+        repository.mark_in_progress(claim_id)
+        repository.add_activity(
+            claim_id,
+            ActivityCreate(step="started", message="Agent run started"),
+        )
+    except ValueError as error:
+        raise _http_error(error) from error
+    background_tasks.add_task(_run_agent, claim_id, request.thread_id)
+    return RunResponse(claim_id=claim_id, thread_id=request.thread_id, status="started")
 
 
 @router.post(
