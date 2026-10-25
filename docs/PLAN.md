@@ -85,14 +85,14 @@ Why: handlers need one clear operational view of the queue, evidence, reasoning 
 
 Success criteria:
 
-- [ ] `npm run check:ts` passes ESLint, Prettier, TypeScript and Vitest with at least 80% frontend coverage.
-- [ ] Component tests cover loading, empty and error states; all four queue states; claim evidence; decision and payout display; activity ordering; and read-only instructions.
-- [ ] Component tests prove sign-off and payment controls appear only in valid states and use separate API operations.
-- [ ] In the browser, `/` shows all 25 queue claims with waiting, in-progress, waiting-for-sign-off or decided status, with money formatted like `$1,250.00`.
-- [ ] In the browser, selecting a claim shows its story, items, documents, policy, customer history, decision and reasons without exposing any evaluation answer.
-- [ ] In the browser, starting a claim visibly changes its state and appends activity in order until the stubbed decision appears.
-- [ ] In the browser, the instructions page is readable but has no edit control.
-- [ ] Playwright MCP inspection at desktop and narrow viewport sizes confirms the brand, usable layout, keyboard focus, accessible names and no browser-console errors.
+- [x] `npm run check:ts` passes ESLint, Prettier, TypeScript and Vitest with at least 80% frontend coverage.
+- [x] Component tests cover loading, empty and error states; all four queue states; claim evidence; decision and payout display; activity ordering; and read-only instructions.
+- [x] Component tests prove sign-off and payment controls appear only in valid states and use separate API operations.
+- [x] In the browser, `/` shows all 25 queue claims with waiting, in-progress, waiting-for-sign-off or decided status, with money formatted like `$1,250.00`.
+- [x] In the browser, selecting a claim shows its story, items, documents, policy, customer history, decision and reasons without exposing any evaluation answer.
+- [x] In the browser, starting a claim visibly changes its state and appends activity in order until the stubbed decision appears.
+- [x] In the browser, the instructions page is readable but has no edit control.
+- [x] Playwright inspection at desktop and narrow viewport sizes confirms the brand, usable layout, keyboard focus, accessible names and no browser-console errors.
 
 ## Phase 5: End-to-end journeys
 
