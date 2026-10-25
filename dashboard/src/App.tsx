@@ -37,8 +37,8 @@ export function App() {
   }, []);
 
   const refresh = useCallback(async () => {
-    await loadQueue();
     if (selectedId) await loadDetail(selectedId);
+    await loadQueue();
   }, [loadDetail, loadQueue, selectedId]);
 
   useEffect(() => {

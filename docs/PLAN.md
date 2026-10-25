@@ -102,13 +102,13 @@ Why: unit tests prove the pieces, while these journeys prove the backend, dashbo
 
 Success criteria:
 
-- [ ] `npm run check:e2e` starts its own backend and dashboard and all Playwright tests pass without a real model key.
-- [ ] An approval journey moves a waiting claim through in-progress to decided and displays its payout and policy-based rationale.
-- [ ] Decline and refer journeys display a zero payout and the stored reasons.
-- [ ] A high-value approval journey reaches waiting for sign-off, proves payment is blocked, records handler sign-off, then records the separate simulated payment.
-- [ ] Refreshing a decided or waiting-for-sign-off claim preserves its state, decision and activity from SQLite.
-- [ ] A browser-network assertion proves agent execution calls only the dedicated run operation; a backend spy again proves the model payload contains no forbidden personal fields or values.
-- [ ] Queue, claim, activity and instructions pages have no uncaught browser errors and no failed API requests in their expected flows.
+- [x] `npm run check:e2e` starts its own backend and dashboard and all Playwright tests pass without a real model key.
+- [x] An approval journey moves a waiting claim through in-progress to decided and displays its payout and policy-based rationale.
+- [x] Decline and refer journeys display a zero payout and the stored reasons.
+- [x] A high-value approval journey reaches waiting for sign-off, proves payment is blocked, records handler sign-off, then records the separate simulated payment.
+- [x] Refreshing a decided or waiting-for-sign-off claim preserves its state, decision and activity from SQLite.
+- [x] A browser-network assertion proves agent execution calls only the dedicated run operation; a backend spy again proves the model payload contains no forbidden personal fields or values.
+- [x] Queue, claim, activity and instructions pages have no uncaught browser errors and no failed API requests in their expected flows.
 
 ## Phase 6: Final verification and handover
 
