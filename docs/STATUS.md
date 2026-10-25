@@ -1,10 +1,15 @@
 # Status
 
-A hello-world skeleton with every check in place:
+Phase 1 of the pilot is complete:
 
-- `backend/`: one route, `GET /api/health`
-- `agent/`: the entry point `run(claim_id, thread_id)`, with one tool that calls the health route
-- `dashboard/`: one page that shows whether the backend is up
-- `e2e/`: one test of that page
+- `backend/`: FastAPI health route and idempotent SQLite bootstrap for the 25 operational claims and their related records
+- `agent/`: the typed `run(claim_id, thread_id)` entry point ready for the claim workflow
+- `dashboard/`: React, Vite and Vitest application foundation
+- `e2e/`: Playwright application smoke test
+- root commands: `npm run dev`, `npm run check:python`, `npm run check:ts` and `npm run check:e2e`
 
-Nothing of UnderCover is built yet. Update this file as you build.
+The seed process reads the operational JSON and policy wording only. It does not read evaluation data, the security fixture or the claims manual.
+
+Run `uv sync` and `npm install`, then `npm run dev`. The API is at `http://127.0.0.1:8000` and the dashboard is at `http://127.0.0.1:5173`.
+
+The claims workflow, privacy-safe agent, operational dashboard and full end-to-end journeys are still to be built in the remaining phases.

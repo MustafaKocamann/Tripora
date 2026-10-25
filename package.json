@@ -1,0 +1,43 @@
+{
+  "name": "undercover",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail \"uv run -m uvicorn backend.main:app --port 8000\" \"vite --config vite.config.ts --configLoader runner --host 127.0.0.1 --port 5173 --strictPort\"",
+    "check": "npm run check:python && npm run check:ts && npm run check:e2e",
+    "check:python": "uv run ruff format --check backend agent && uv run ruff check backend agent && uv run pyright backend agent && uv run pytest --cov=backend --cov=agent --cov-fail-under=80",
+    "check:ts": "eslint dashboard e2e eslint.config.js playwright.config.ts vite.config.ts --max-warnings=0 && prettier --check dashboard e2e package.json eslint.config.js playwright.config.ts tsconfig.json vite.config.ts && tsc --noEmit && vitest run --coverage --configLoader runner",
+    "check:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.57.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitest/eslint-plugin": "1.4.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.1",
+    "@vitest/coverage-v8": "^4.0.8",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsx-a11y-x": "^0.1.1",
+    "eslint-plugin-playwright": "^2.3.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "eslint-plugin-sonarjs": "^3.0.5",
+    "globals": "^16.5.0",
+    "jsdom": "^27.2.0",
+    "prettier": "^3.6.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3",
+    "vite": "^7.2.2",
+    "vitest": "^4.0.8"
+  }
+}

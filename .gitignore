@@ -11,6 +11,8 @@ env/
 __pycache__/
 *.pyc
 .pytest_cache/
+.coverage
+coverage/
 
 # IDE
 .vscode/
@@ -18,6 +20,10 @@ __pycache__/
 
 # Cache and logs
 .cache/
+.npm-cache/
+node_modules/
+e2e/test-results/
+backend/*.db
 *.log
 
 

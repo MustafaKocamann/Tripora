@@ -47,10 +47,11 @@ export default defineConfig(
     files: ["dashboard/src/**/*.tsx"],
     extends: [
       reactHooks.configs.flat["recommended-latest"],
-      jsxA11y.configs.recommended,
       reactRefresh.configs.vite,
     ],
     languageOptions: { globals: globals.browser },
+    plugins: { "jsx-a11y-x": jsxA11y },
+    rules: jsxA11y.configs.recommended.rules,
   },
   {
     files: ["dashboard/src/**/*.test.tsx"],
